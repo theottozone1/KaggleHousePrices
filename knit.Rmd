@@ -1,0 +1,53 @@
+---
+title: "Kaggle House Prices"
+author: "Tyler Otto"
+date: "March 25, 2018"
+output: html_document
+---
+
+```{r "setup", include=FALSE}
+require("knitr")
+opts_knit$set(root.dir = "C:/Users/Ty/Documents/.kaggle/competitions/house-prices-advanced-regression-techniques")
+getwd()
+```
+
+####Establish the libraries
+```{r,include=FALSE}
+system('kaggle competitions download -c house-prices-advanced-regression-techniques')
+```
+
+```{r, message = FALSE,warning = FALSE}
+library(tidyverse)
+library(ggplot2)
+library(scales)
+```
+
+
+#### Reading in the data sets
+```{r, results=FALSE}
+train <- read.csv('train.csv')
+head(train,10)
+
+test <- read.csv('test.csv')
+test
+```
+
+####Plotting Sales Price of House
+I want to get a quick view of our target variable. Let's plot!
+```{r, message = FALSE,warning = FALSE}
+ggplot(train, aes(x=SalePrice)) +
+  geom_histogram(bins=100) +
+  labs(y='Frequency', x='Sale Price of House')
+```
+
+By plotting the year and price against each other, we see these two are positively correlated. By introducing a variable that determines whether the house has air conditioning or not, we see that all houses built after 1975 have air conditioning. Next we'll see how air condition affects the price of the house.
+
+```{r, echo=FALSE, results=FALSE, warning= FALSE}
+ggplot(train, aes(x=YearBuilt, y=SalePrice, col=CentralAir)) +
+  geom_point() +
+  geom_smooth(method = 'gam') +
+  facet_wrap(~CentralAir) +
+  labs(X='Year That House Was Built', col='Binary Air Condition') +
+  scale_y_continuous(name="Price of House", labels = comma)
+```
+
